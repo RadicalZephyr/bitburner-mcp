@@ -1,0 +1,20 @@
+{
+    "include": ["NetscriptDefinitions.d.ts", "src/**/*.ts"],
+    "compilerOptions": {
+        "lib": ["esnext", "dom"],
+        "module": "esnext",
+        "target": "esnext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "noEmit": true,
+        "noImplicitReturns": true,
+        "noUncheckedIndexedAccess": true,
+        "noUncheckedSideEffectImports": true,
+        "isolatedModules": true,
+        "skipLibCheck": true,
+        "types": [],
+        "paths": {
+            "@ns": ["./NetscriptDefinitions.d.ts"]
+        }
+    }
+}

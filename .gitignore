@@ -1,0 +1,6 @@
+# ingame/ (TypeScript)
+ingame/node_modules/
+ingame/dist/
+
+# proxy/ (Rust)
+proxy/target/
