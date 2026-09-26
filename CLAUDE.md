@@ -10,7 +10,7 @@ An MCP server for Bitburner, split in two: `ingame/` (TypeScript, a Netscript sc
 
 Each half is built from its own directory. There is no root build.
 
-`ingame/` (Node 22 via `.nvmrc`; mise or nvm):
+`ingame/` (Node 22, pinned in `ingame/mise.toml`):
 
 - `npm install` once, then `npm run build` produces `dist/mcp.js` (Vite 8 on rolldown, one ES module)
 - `npm run watch` rebuilds on change

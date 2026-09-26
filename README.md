@@ -53,7 +53,7 @@ Read from `bitburner-src` 3.0.2; file paths are in `CLAUDE.md`.
 
 ## Building
 
-`ingame/` needs Node 22 (`.nvmrc`, read by mise or nvm):
+`ingame/` needs Node 22, pinned in `ingame/mise.toml`:
 
 ```bash
 cd ingame && npm install && npm run build
