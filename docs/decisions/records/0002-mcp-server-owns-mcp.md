@@ -1,11 +1,12 @@
 # 0002 -- The MCP server owns MCP
 
 <details>
-<summary><strong>Status:</strong> Drafted 2026-11-22</summary>
+<summary><strong>Status:</strong> Accepted 2026-11-23</summary>
 
 | Date       | Transition |
 | ---------- | ---------- |
 | 2026-11-22 | Drafted    |
+| 2026-11-23 | Accepted   |
 
 </details>
 
