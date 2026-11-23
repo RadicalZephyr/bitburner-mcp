@@ -34,6 +34,16 @@ kills every script, and so does reloading the game. A fresh `mcp.js` has never
 seen the client's `initialize`, so either the relay replays the handshake,
 which means parsing MCP, or the session breaks every time the player installs.
 
+> **2026-11-23 (after the decision):** this reason only holds for clients
+> that still use the handshake. MCP `2026-07-28` replaced `initialize` with
+> per-request `_meta` (SEP-2567), so a client on that version has no session
+> to lose when the game reconnects. `rmcp` 3.11.0 documents this as
+> `ProtocolVersion::NO_INITIALIZE`. A spike against it also showed that a
+> client sending `initialize` for `2026-07-28` is negotiated down to
+> `2025-11-25`, the newest version with a handshake. Clients on `2025-11-25`
+> and older still lose their session, and the other two reasons don't depend
+> on the handshake, so the decision stands.
+
 **Tiers have to be enforced before anything reaches the game.** The tier
 switch (analyst, pair programmer, player agent) is a promise that a tier the
 player turned off can't be reached. Filtering `tools/list` and refusing
