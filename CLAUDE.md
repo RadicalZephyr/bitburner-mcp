@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-An MCP server for Bitburner, split in two: `ingame/` (TypeScript, a Netscript script that runs inside the game page and owns all MCP tools) and `proxy/` (Rust, a stdio-to-websocket relay on the host, needed because the page cannot accept connections). `README.md` has the design and the open questions; read it before changing the shape of either half.
+An MCP server for Bitburner, split in two: `mcp-server/` (Rust, on the host, spawned by the MCP client over stdio) and `ingame/` (TypeScript, a Netscript script that runs inside the game page and dials out to the MCP server over a websocket, because the page cannot accept connections). `README.md` has the shape; `docs/notes/2026-09-24-what-were-building.md` has the design and what's decided. Read both before changing the shape of either half.
+
+Naming: the Rust half is "the MCP server". "Proxy" means the planned in-game stand-in for `NS` that records RAM use, not the Rust half.
 
 ## Commands
 
@@ -17,7 +19,7 @@ Each half is built from its own directory. There is no root build.
 - `npm run typecheck` runs `tsc --noEmit`; Vite does not type-check
 - `npm run format` / `npm run format:check` (prettier; config is `.prettierrc` at the repo root)
 
-`proxy/`:
+`mcp-server/`:
 
 - `cargo build` (`--release` for the binary an MCP client should spawn)
 - `cargo clippy --all-targets -- -D warnings` and `cargo fmt` before committing
@@ -27,11 +29,11 @@ No test runner is set up on either side yet. Once there is one, Rust is `cargo t
 
 ## How the pipe works
 
-MCP client, stdio (newline-delimited JSON-RPC), proxy, websocket (one message per text frame), `mcp.js`.
+MCP client, stdio (newline-delimited JSON-RPC), MCP server, websocket (one message per text frame), `mcp.js`.
 
-- The proxy never parses MCP. All protocol logic belongs in `ingame/src/main.ts`, which currently answers `ping` and rejects everything else with `-32601`.
-- While the game is disconnected the proxy holds client lines in a small backlog (one stashed line plus a 64-entry channel) and stops reading stdin beyond that. stdin EOF ends the process; the game dropping its socket does not, it just waits for a reconnect.
-- The port lives in exactly two places: `DEFAULT_BIND` in `proxy/src/main.rs` and `DEFAULT_URL` in `ingame/src/main.ts`. Change both.
+- Today the MCP server is still a relay that never parses MCP, and `ingame/src/main.ts` answers `ping` and rejects everything else with `-32601`. MCP is moving into `mcp-server/`; the game will only execute tools.
+- While the game is disconnected the MCP server holds client lines in a small backlog (one stashed line plus a 64-entry channel) and stops reading stdin beyond that. stdin EOF ends the process; the game dropping its socket does not, it just waits for a reconnect.
+- The port lives in exactly two places: `DEFAULT_BIND` in `mcp-server/src/main.rs` and `DEFAULT_URL` in `ingame/src/main.ts`. Change both.
 
 ## Constraints from the game
 

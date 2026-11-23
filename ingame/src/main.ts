@@ -1,7 +1,7 @@
 import type { NS } from '@ns';
 
 /**
- * Where the host-side proxy listens. Override with the first script
+ * Where the host-side MCP server listens. Override with the first script
  * argument: `run mcp.js ws://localhost:12526`.
  */
 const DEFAULT_URL = 'ws://localhost:12526';
@@ -53,7 +53,7 @@ export async function main(ns: NS): Promise<void> {
  * and handlers never overlap two async Netscript calls.
  *
  * @param ns - Netscript API
- * @param socket - Freshly constructed socket to the proxy
+ * @param socket - Freshly constructed socket to the MCP server
  * @returns Resolves when the socket closes
  */
 function serve(ns: NS, socket: WebSocket): Promise<void> {
@@ -74,7 +74,7 @@ function serve(ns: NS, socket: WebSocket): Promise<void> {
  * Answer one JSON-RPC message. Stub: only `ping` is implemented, which is
  * enough to test the pipe end to end. Everything else is "method not found".
  *
- * @param raw - One JSON-RPC message as sent by the proxy
+ * @param raw - One JSON-RPC message as sent by the MCP server
  * @returns The response, or nothing for a notification
  */
 function handle(raw: string): JsonRpcResponse | undefined {

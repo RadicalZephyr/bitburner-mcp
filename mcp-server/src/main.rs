@@ -1,10 +1,12 @@
-//! Host-side relay for the Bitburner MCP server.
+//! Host-side MCP server for Bitburner.
 //!
 //! An MCP client (Claude Code, an editor, ...) spawns this binary and speaks
-//! MCP over stdio. The real MCP server runs inside the Bitburner page, which
-//! cannot listen for connections, so it dials out to this process over a
-//! websocket instead. This binary is a dumb pipe between the two: it never
-//! parses or interprets MCP.
+//! MCP over stdio. The game page cannot listen for connections, so the
+//! in-game script dials out to this process over a websocket instead.
+//!
+//! For now this binary is still a dumb pipe between the two: it never parses
+//! or interprets MCP, and the in-game script answers everything. MCP is
+//! moving in here, with the game left to execute tools.
 //!
 //! Wire rules:
 //! - stdin/stdout carry newline-delimited JSON-RPC, as the MCP stdio
