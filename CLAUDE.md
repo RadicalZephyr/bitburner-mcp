@@ -35,13 +35,13 @@ MCP client, stdio (newline-delimited JSON-RPC), proxy, websocket (one message pe
 
 ## Constraints from the game
 
-The reference is `../bitburner-src` (3.0.2). Verify there rather than from memory when something looks off.
+The reference is `../bitburner-src` checked out at the `v3.0.1` tag, the version the game runs. Its `dev` branch pre-bumps `package.json` to the next version, so the number there is not a release. Verify there rather than from memory when something looks off.
 
 - **No overlapping Netscript calls.** `checkEnvFlags` in `src/Netscript/NetscriptHelpers.tsx` runs on every `ns` call and kills the script if another async `ns` call is still pending. `asleep` is exempt and never marks itself as running, which is why `main` parks on `ns.asleep` or plain promises while the websocket handlers do the work. Any tool that awaits an async `ns` call must be serialised behind a queue.
 - **Static RAM.** `src/Script/RamCalculations.ts` walks the bundle's AST: every referenced `ns.*` function adds its cost (`src/Netscript/RamCostGenerator.ts`), and the identifiers `window` and `document` add 25GB each. Keep them out of the bundle, dependencies included. Check the cost with `mem mcp.js` in the game or the Remote File API's `calculateRam`.
 - **One file.** The game loads a script as a single blob-URL ES module on the main thread (`src/NetscriptJSEvaluator.ts`). The build must emit exactly `dist/mcp.js`: no chunks, no dynamic imports. The entry point contract is `export async function main(ns)`.
 - **Kill semantics.** Killing the script runs the `ns.atExit` handler (which closes the socket) and makes the next `ns` call throw `ScriptDeath` (`src/Netscript/ScriptDeath.ts`). A catch-all around `ns` calls in a tool handler must rethrow it, or the script turns into a zombie that keeps answering requests.
-- **Types.** `@ns` resolves to `ingame/NetscriptDefinitions.d.ts`, a copy of `../bitburner-src/src/ScriptEditor/NetscriptDefinitions.d.ts`. Refresh it by copying again when the game updates (or via the RFA `getDefinitionFile` method). It is excluded from prettier.
+- **Types.** `@ns` resolves to `ingame/NetscriptDefinitions.d.ts`, the definition file the running game serves through the RFA `getDefinitionFile` method. Refresh it from the game when the game updates. It should be byte-identical to `src/ScriptEditor/NetscriptDefinitions.d.ts` at the matching tag; never copy it from `dev`, which is ahead of the release. It is excluded from prettier.
 - **Target.** Electron 41 is Chromium 146, so `build.target` is `esnext` and nothing is downlevelled. Vite 8 bundles with rolldown and transforms with oxc: the config keys are `build.rolldownOptions` and `oxc`, not `rollupOptions` and `esbuild`.
 
 ## Neighbouring repos

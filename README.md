@@ -34,7 +34,7 @@ breaks on every release.
 
 ## What the game imposes
 
-Read from `bitburner-src` 3.0.2; file paths are in `CLAUDE.md`.
+Read from `bitburner-src` at `v3.0.1`; file paths are in `CLAUDE.md`.
 
 - RAM is the budget. A script pays 1.6GB to exist plus a static cost for
   every `ns` function it references. The identifiers `window` and
